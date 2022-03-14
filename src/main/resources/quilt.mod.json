@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "id": "porting_lib",
+    "version": "${version}",
+
+    "name": "Porting Lib",
+    "description": "A collection of utilities for porting mods from Forge to Fabri",
+    "authors": [
+      "The Create Fabric Team"
+    ],
+    "contact": {
+      "sources": "https://github.com/Fabricators-of-Create/Porting-Lib"
+    },
+
+    "license": "LGPL",
+    "icon": "assets/porting_lib/icon.png",
+
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "io.github.fabricators_of_create.porting_lib.PortingLib"
+      ],
+      "client": [
+        "io.github.fabricators_of_create.porting_lib.PortingLibClient"
+      ],
+      "preLaunch": [
+        "io.github.fabricators_of_create.porting_lib.PortingLibPreLaunch"
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "version": "*"
+      },
+      {
+        "id": "quilt_base",
+        "version": "*"
+      },
+      {
+        "id": "minecraft",
+        "version": "1.18.2"
+      },
+      {
+        "id": "java",
+        "version": ">=17"
+      }
+    ]
+  },
+  "accessWidener": "porting_lib.accesswidener",
+  "mixins": [
+    "porting_lib.mixins.client.json",
+    "porting_lib.mixins.common.json"
+  ]
+}

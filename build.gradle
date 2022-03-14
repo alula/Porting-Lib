@@ -32,6 +32,19 @@ repositories {
 	maven { url = "https://maven.wispforest.io" }
 	maven { url = "https://cursemaven.com" }
 	maven { url = "https://jitpack.io" }
+	maven {
+		name 'Quilt'
+		url 'https://maven.quiltmc.org/repository/release'
+	}
+
+	maven {
+		name 'QuiltSnapshot'
+		url 'https://maven.quiltmc.org/repository/snapshot'
+		content {
+			includeGroup 'org.quiltmc.fabric_api_qsl'
+			includeGroupByRegex 'org\\.quiltmc\\.qsl(?:\\.[a-z_]+)?'
+		}
+	}
 }
 
 dependencies {
@@ -44,16 +57,18 @@ dependencies {
 			setNameSyntheticMembers(false)
 		}
 	}
-	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
-	modLocalRuntime("maven.modrinth:lazydfu:0.1.2")
-	modLocalRuntime("maven.modrinth:suggestionproviderfabric:1.0.1")
-	modLocalRuntime("mcjty.theoneprobe:theoneprobe-fabric:${top_version}")
+	modImplementation "org.quiltmc:quilt-loader:${project.loader_version}"
+	modImplementation "org.quiltmc.qsl:qsl:${qsl_version}+${project.minecraft_version}-SNAPSHOT"
+	modImplementation("org.quiltmc.fabric_api_qsl:fabric-api:${project.fabric_version}")
+//	modLocalRuntime("maven.modrinth:lazydfu:0.1.2")
+//	modLocalRuntime("maven.modrinth:suggestionproviderfabric:1.0.1")
+//	modLocalRuntime("mcjty.theoneprobe:theoneprobe-fabric:${top_version}")
 	modLocalRuntime("maven.modrinth:lithium:${project.lithium_version}")
 //	modLocalRuntime("maven.modrinth:iris:${project.iris_version}")
-	modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}") { exclude group: "net.fabricmc"; exclude group: "net.fabricmc.fabric-api" }
+//	modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu_version}") { exclude group: "net.fabricmc"; exclude group: "net.fabricmc.fabric-api" }
 
 	// dependencies
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+
 	modApi(include("me.alphamode:ForgeTags:${project.forge_tags_version}"))
 	api(include("com.github.LlamaLad7:MixinExtras:0.0.6"))
 	annotationProcessor(include("com.github.LlamaLad7:MixinExtras:0.0.6"))
@@ -89,6 +104,10 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand properties
+	}
+
+	filesMatching("quilt.mod.json") {
+		expand "version": project.version
 	}
 }
 

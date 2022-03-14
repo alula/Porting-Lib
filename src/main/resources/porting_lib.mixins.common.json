@@ -61,7 +61,7 @@
     "SpreadPlayersCommandMixin",
     "StructureProcessorMixin",
     "StructureTemplateMixin",
-    "TagContainerMixin",
+    "ReloadableServerResourcesMixin",
     "TallGrassBlockMixin",
     "TeleportCommandMixin",
     "ThrownEnderpearlMixin",

@@ -1,10 +1,15 @@
 package io.github.fabricators_of_create.porting_lib.util;
 
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -12,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+
+import static net.minecraft.client.resources.model.ModelBakery.MISSING_MODEL_LOCATION;
 
 public class PortingHooks {
 	public static int onBlockBreakEvent(Level world, GameType gameType, ServerPlayer entityPlayer, BlockPos pos) {
@@ -58,5 +65,33 @@ public class PortingHooks {
 			}
 		}
 		return event.isCanceled() ? -1 : event.getExpToDrop();
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static ModelBakery MODEL_BAKERY;
+
+	@Environment(EnvType.CLIENT)
+	private static UnbakedModel missingModel = null;
+
+	@Environment(EnvType.CLIENT)
+	protected static UnbakedModel getMissingModel() {
+		if (missingModel == null) {
+			try {
+				missingModel = MODEL_BAKERY.getModel(MISSING_MODEL_LOCATION);
+			}
+			catch(Exception e) {
+				throw new RuntimeException("Missing the missing model, this should never happen");
+			}
+		}
+		return missingModel;
+	}
+
+	public static UnbakedModel getModelOrMissing(ResourceLocation location) {
+		try {
+			return MODEL_BAKERY.getModel(location);
+		}
+		catch(Exception e) {
+			return getMissingModel();
+		}
 	}
 }

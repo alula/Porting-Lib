@@ -4,8 +4,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -190,5 +195,13 @@ public class CraftingHelper {
 			return shareTagB == null;
 		else
 			return shareTagB != null && shareTagA.equals(shareTagB);
+	}
+
+	public static Predicate<JsonObject> getCondition(JsonObject json) {
+		ResourceLocation type = new ResourceLocation(GsonHelper.getAsString(json, ResourceConditions.CONDITION_ID_KEY));
+		Predicate<JsonObject> condition = ResourceConditions.get(type);
+		if (condition == null)
+			throw new JsonSyntaxException("Unknown condition type: " + type);
+		return condition;
 	}
 }

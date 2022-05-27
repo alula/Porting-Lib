@@ -64,6 +64,7 @@
     "PlayerAdvancementsMixin",
     "PlayerListMixin",
     "PlayerMixin",
+    "PowderSnowBlockMixin",
     "ProjectileMixin",
     "ProjectileUtilMixin",
     "ProtoChunkMixin",

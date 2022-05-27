@@ -2,6 +2,7 @@ package io.github.fabricators_of_create.porting_lib.item;
 
 import net.minecraft.world.item.ItemStack;
 
+// TODO remove in favor of FabricItem#allowNbtUpdateAnimation?
 public interface ReequipAnimationItem {
 	default boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
 		return !oldStack.equals(newStack);

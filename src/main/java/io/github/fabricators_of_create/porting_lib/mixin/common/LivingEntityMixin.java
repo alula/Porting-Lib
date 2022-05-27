@@ -95,7 +95,7 @@ public abstract class LivingEntityMixin extends Entity implements EntityExtensio
 
 	@Inject(method = "createLivingAttributes", at = @At("RETURN"))
 	private static void port_lib$addModdedAttributes(CallbackInfoReturnable<AttributeSupplier.Builder> cir) {
-		cir.getReturnValue().add(PortingLibAttributes.ENTITY_GRAVITY).add(PortingLibAttributes.SWIM_SPEED);
+		cir.getReturnValue().add(PortingLibAttributes.ENTITY_GRAVITY).add(PortingLibAttributes.SWIM_SPEED).add(PortingLibAttributes.STEP_HEIGHT_ADDITION);
 	}
 
 	@ModifyArgs(

@@ -1,0 +1,7 @@
+{
+  "porting_lib.stepHeight": "Step Height",
+  "porting_lib.entity_gravity": "Entity Gravity",
+
+  "attribute.name.porting_lib.swim_speed": "Swim Speed",
+  "attribute.name.porting_lib.entity_gravity": "Entity Gravity"
+}

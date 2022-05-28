@@ -9,12 +9,11 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Iterator;
 
-public interface IItemHandler extends Storage<ItemVariant> {
-	int getSlots();
-	ItemStack getStackInSlot(int slot);
+public interface IItemHandler extends SlotExposedStorage {
+
 	ItemStack insertItem(int slot, ItemStack stack, TransactionContext t); // remainder
 	ItemStack extractItem(int slot, int amount, TransactionContext t); // extracted
-	int getSlotLimit(int slot);
+
 	boolean isItemValid(int slot, ItemStack stack);
 
 	@Override

@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class ItemStackHandler extends SnapshotParticipant<SnapshotData> implements Storage<ItemVariant>, INBTSerializable<CompoundTag> {
+public class ItemStackHandler extends SnapshotParticipant<SnapshotData> implements SlotExposedStorage, INBTSerializable<CompoundTag> {
 	public ItemStack[] stacks;
 
 	public ItemStackHandler() {
@@ -137,6 +137,7 @@ public class ItemStackHandler extends SnapshotParticipant<SnapshotData> implemen
 		return stacks[slot];
 	}
 
+	@Override
 	public int getSlotLimit(int slot) {
 		return getStackInSlot(slot).getMaxStackSize();
 	}

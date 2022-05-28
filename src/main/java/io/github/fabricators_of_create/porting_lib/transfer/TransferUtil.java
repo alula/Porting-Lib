@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import io.github.fabricators_of_create.porting_lib.PortingLib;
 import io.github.fabricators_of_create.porting_lib.transfer.cache.ClientFluidLookupCache;
@@ -14,6 +13,7 @@ import io.github.fabricators_of_create.porting_lib.transfer.cache.EmptyItemLooku
 import io.github.fabricators_of_create.porting_lib.transfer.fluid.FluidTransferable;
 import io.github.fabricators_of_create.porting_lib.transfer.item.ItemTransferable;
 import io.github.fabricators_of_create.porting_lib.util.FluidStack;
+import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -70,7 +70,7 @@ public class TransferUtil {
 	 * The recommended way to get an item storage.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, @Nullable Direction side) {
+	public static LazyOptional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, @Nullable Direction side) {
 		return getItemStorage(level, pos, null, side);
 	}
 
@@ -78,7 +78,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos) {
+	public static LazyOptional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos) {
 		return getItemStorage(level, pos, null);
 	}
 
@@ -87,7 +87,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<ItemVariant>> getItemStorage(BlockEntity be, @Nullable Direction side) {
+	public static LazyOptional<Storage<ItemVariant>> getItemStorage(BlockEntity be, @Nullable Direction side) {
 		return getItemStorage(null, null, be, side);
 	}
 
@@ -95,7 +95,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<ItemVariant>> getItemStorage(BlockEntity be) {
+	public static LazyOptional<Storage<ItemVariant>> getItemStorage(BlockEntity be) {
 		return getItemStorage(be, null);
 	}
 
@@ -109,7 +109,7 @@ public class TransferUtil {
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, Direction)
 	 * @return a Storage of ItemVariants, or null if none found.
 	 */
-	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
+	public static LazyOptional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
 		if (be == null) {
 			Objects.requireNonNull(level, "If a null Block Entity is provided, the Level may NOT be null!");
 			Objects.requireNonNull(pos, "If a null Block Entity is provided, the pos may NOT be null!");
@@ -126,12 +126,12 @@ public class TransferUtil {
 				boolean client = level != null && level.isClientSide();
 				if (client) {
 					if (t.canTransferItemsClientSide())
-						return Optional.ofNullable(t.getItemStorage(side)); // only query if on client and client transfer allowed
+						return t.getItemStorage(side); // only query if on client and client transfer allowed
 				} else {
-					return Optional.ofNullable(t.getItemStorage(side)); // null level - hope for the best
+					return t.getItemStorage(side); // null level - hope for the best
 				}
 			}
-			return Optional.empty();
+			return LazyOptional.empty();
 		}
 		List<Storage<ItemVariant>> itemStorages = new ArrayList<>();
 		BlockState state = be == null ? level.getBlockState(pos) : be.getBlockState();
@@ -153,9 +153,9 @@ public class TransferUtil {
 			}
 		}
 
-		if (itemStorages.isEmpty()) return Optional.empty();
-		if (itemStorages.size() == 1) return Optional.of(itemStorages.get(0));
-		return Optional.of(new CombinedStorage<>(itemStorages));
+		if (itemStorages.isEmpty()) return LazyOptional.empty();
+		if (itemStorages.size() == 1) return LazyOptional.ofObject(itemStorages.get(0));
+		return LazyOptional.ofObject(new CombinedStorage<>(itemStorages));
 	}
 
 	// Fluid storage getting
@@ -164,7 +164,7 @@ public class TransferUtil {
 	 * The recommended way to get a fluid storage.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, @Nullable Direction side) {
+	public static LazyOptional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, @Nullable Direction side) {
 		return getFluidStorage(level, pos, null, side);
 	}
 
@@ -172,7 +172,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos) {
+	public static LazyOptional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos) {
 		return getFluidStorage(level, pos, null);
 	}
 
@@ -181,7 +181,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<FluidVariant>> getFluidStorage(BlockEntity be, @Nullable Direction side) {
+	public static LazyOptional<Storage<FluidVariant>> getFluidStorage(BlockEntity be, @Nullable Direction side) {
 		return getFluidStorage(null, null, be, side);
 	}
 
@@ -189,7 +189,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	public static Optional<Storage<FluidVariant>> getFluidStorage(BlockEntity be) {
+	public static LazyOptional<Storage<FluidVariant>> getFluidStorage(BlockEntity be) {
 		return getFluidStorage(be, null);
 	}
 
@@ -203,7 +203,7 @@ public class TransferUtil {
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, Direction)
 	 * @return a Storage of FluidVariants, or null if none found.
 	 */
-	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
+	public static LazyOptional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
 		if (be == null) {
 			Objects.requireNonNull(level, "If a null Block Entity is provided, the Level may NOT be null!");
 			Objects.requireNonNull(pos, "If a null Block Entity is provided, the pos may NOT be null!");
@@ -220,12 +220,12 @@ public class TransferUtil {
 				boolean client = level != null && level.isClientSide();
 					if (client) {
 						if (t.canTransferFluidsClientSide())
-							return Optional.ofNullable(t.getFluidStorage(side)); // only query if on client and client transfer allowed
+							return LazyOptional.ofObject(t.getFluidStorage(side)); // only query if on client and client transfer allowed
 					} else {
-						return Optional.ofNullable(t.getFluidStorage(side)); // null level - hope for the best
+						return LazyOptional.ofObject(t.getFluidStorage(side)); // null level - hope for the best
 					}
 			}
-			return Optional.empty();
+			return LazyOptional.empty();
 		}
 		List<Storage<FluidVariant>> fluidStorages = new ArrayList<>();
 		BlockState state = be == null ? level.getBlockState(pos) : be.getBlockState();
@@ -247,9 +247,9 @@ public class TransferUtil {
 			}
 		}
 
-		if (fluidStorages.isEmpty()) return Optional.empty();
-		if (fluidStorages.size() == 1) return Optional.of(fluidStorages.get(0));
-		return Optional.of(new CombinedStorage<>(fluidStorages));
+		if (fluidStorages.isEmpty()) return LazyOptional.empty();
+		if (fluidStorages.size() == 1) return LazyOptional.ofObject(fluidStorages.get(0));
+		return LazyOptional.ofObject(new CombinedStorage<>(fluidStorages));
 	}
 
 	// misc utils below
@@ -263,7 +263,7 @@ public class TransferUtil {
 	 * @return the found storage, or null if none available.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<?> getStorage(BlockEntity be, @Nullable Direction side, Class<T> capability) {
+	public static <T> LazyOptional<?> getStorage(BlockEntity be, @Nullable Direction side, Class<T> capability) {
 		if (capability == ItemVariant.class) {
 			return getItemStorage(null, null, be, side);
 		} else if (capability == FluidVariant.class) {
@@ -283,17 +283,17 @@ public class TransferUtil {
 	}
 
 	/**
-	 * @return an Optional of a FluidStack containing the first fluid found in the supplied item, or Optional.empty() if none.
+	 * @return an {@link LazyOptional} of a FluidStack containing the first fluid found in the supplied item, or {@link LazyOptional#empty()} if none.
 	 */
-	public static Optional<FluidStack> getFluidContained(ItemStack container) {
+	public static LazyOptional<FluidStack> getFluidContained(ItemStack container) {
 		if (container != null && !container.isEmpty()) {
 			Storage<FluidVariant> storage = ContainerItemContext.withInitial(container).find(FluidStorage.ITEM);
 			if (storage != null) {
 				FluidStack first = getFirstFluid(storage);
-				if (first != null) return Optional.of(first);
+				if (first != null) return LazyOptional.ofObject(first);
 			}
 		}
-		return Optional.empty();
+		return LazyOptional.empty();
 	}
 
 	/**
@@ -629,7 +629,7 @@ public class TransferUtil {
 		});
 		ItemStorage.SIDED.registerFallback((world, pos, state, be, face) -> {
 			if (be instanceof ItemTransferable t) {
-				return t.getItemStorage(face);
+				return t.getItemStorage(face).getValueUnsafer();
 			}
 			return null;
 		});

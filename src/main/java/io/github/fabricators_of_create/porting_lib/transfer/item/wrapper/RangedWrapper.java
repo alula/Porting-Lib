@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import io.github.fabricators_of_create.porting_lib.transfer.item.IItemHandlerModifiable;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -41,9 +42,9 @@ public class RangedWrapper implements IItemHandlerModifiable {
 
 	@Override
 	@Nonnull
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, TransactionContext t) {
 		if (checkSlot(slot)) {
-			return compose.insertItem(slot + minSlot, stack, simulate);
+			return compose.insertItem(slot + minSlot, stack, t);
 		}
 
 		return stack;
@@ -51,9 +52,9 @@ public class RangedWrapper implements IItemHandlerModifiable {
 
 	@Override
 	@Nonnull
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+	public ItemStack extractItem(int slot, int amount, TransactionContext t) {
 		if (checkSlot(slot)) {
-			return compose.extractItem(slot + minSlot, amount, simulate);
+			return compose.extractItem(slot + minSlot, amount, t);
 		}
 
 		return ItemStack.EMPTY;

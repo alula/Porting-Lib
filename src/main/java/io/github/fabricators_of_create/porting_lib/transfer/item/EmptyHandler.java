@@ -1,5 +1,6 @@
 package io.github.fabricators_of_create.porting_lib.transfer.item;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.world.item.ItemStack;
 
 public class EmptyHandler implements IItemHandlerModifiable {
@@ -18,12 +19,12 @@ public class EmptyHandler implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean sim) {
+	public ItemStack insertItem(int slot, ItemStack stack, TransactionContext t) {
 		return stack;
 	}
 
 	@Override
-	public ItemStack extractItem(int slot, int amount, boolean sim) {
+	public ItemStack extractItem(int slot, int amount, TransactionContext t) {
 		return ItemStack.EMPTY;
 	}
 

@@ -1,5 +1,7 @@
 package io.github.fabricators_of_create.porting_lib.transfer.item;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.world.item.ItemStack;
 
 public class CombinedInvWrapper implements IItemHandlerModifiable {
@@ -65,19 +67,19 @@ public class CombinedInvWrapper implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, ItemStack stack, TransactionContext t) {
 		int index = getIndexForSlot(slot);
 		IItemHandlerModifiable handler = getHandlerFromIndex(index);
 		slot = getSlotFromIndex(slot, index);
-		return handler.insertItem(slot, stack, simulate);
+		return handler.insertItem(slot, stack, t);
 	}
 
 	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+	public ItemStack extractItem(int slot, int amount, TransactionContext t) {
 		int index = getIndexForSlot(slot);
 		IItemHandlerModifiable handler = getHandlerFromIndex(index);
 		slot = getSlotFromIndex(slot, index);
-		return handler.extractItem(slot, amount, simulate);
+		return handler.extractItem(slot, amount, t);
 	}
 
 	@Override

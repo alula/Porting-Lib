@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.github.fabricators_of_create.porting_lib.PortingLib;
 import io.github.fabricators_of_create.porting_lib.transfer.cache.ClientFluidLookupCache;
@@ -283,17 +284,17 @@ public class TransferUtil {
 	}
 
 	/**
-	 * @return an {@link LazyOptional} of a FluidStack containing the first fluid found in the supplied item, or {@link LazyOptional#empty()} if none.
+	 * @return an {@link Optional} of a FluidStack containing the first fluid found in the supplied item, or {@link Optional#empty()} if none.
 	 */
-	public static LazyOptional<FluidStack> getFluidContained(ItemStack container) {
+	public static Optional<FluidStack> getFluidContained(ItemStack container) {
 		if (container != null && !container.isEmpty()) {
 			Storage<FluidVariant> storage = ContainerItemContext.withInitial(container).find(FluidStorage.ITEM);
 			if (storage != null) {
 				FluidStack first = getFirstFluid(storage);
-				if (first != null) return LazyOptional.ofObject(first);
+				if (first != null) return Optional.of(first);
 			}
 		}
-		return LazyOptional.empty();
+		return Optional.empty();
 	}
 
 	/**

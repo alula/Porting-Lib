@@ -69,7 +69,7 @@ public class ClientItemLookupCache implements BlockApiCache<Storage<ItemVariant>
 		// Query the provider
 		if (cachedBlockEntity == null)
 			return null;
-		return TransferUtil.getItemStorage(cachedBlockEntity, context);
+		return TransferUtil.getItemStorage(cachedBlockEntity, context).orElse(null);
 	}
 
 	@Override

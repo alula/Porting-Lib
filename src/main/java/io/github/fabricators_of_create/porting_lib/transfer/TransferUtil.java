@@ -70,8 +70,7 @@ public class TransferUtil {
 	 * The recommended way to get an item storage.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<ItemVariant> getItemStorage(Level level, BlockPos pos, @Nullable Direction side) {
+	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, @Nullable Direction side) {
 		return getItemStorage(level, pos, null, side);
 	}
 
@@ -79,8 +78,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<ItemVariant> getItemStorage(Level level, BlockPos pos) {
+	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos) {
 		return getItemStorage(level, pos, null);
 	}
 
@@ -89,8 +87,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<ItemVariant> getItemStorage(BlockEntity be, @Nullable Direction side) {
+	public static Optional<Storage<ItemVariant>> getItemStorage(BlockEntity be, @Nullable Direction side) {
 		return getItemStorage(null, null, be, side);
 	}
 
@@ -98,8 +95,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getItemStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<ItemVariant> getItemStorage(BlockEntity be) {
+	public static Optional<Storage<ItemVariant>> getItemStorage(BlockEntity be) {
 		return getItemStorage(be, null);
 	}
 
@@ -113,8 +109,7 @@ public class TransferUtil {
 	 * @see TransferUtil#getItemStorage(Level, BlockPos, Direction)
 	 * @return a Storage of ItemVariants, or null if none found.
 	 */
-	@Nullable
-	public static Storage<ItemVariant> getItemStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
+	public static Optional<Storage<ItemVariant>> getItemStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
 		if (be == null) {
 			Objects.requireNonNull(level, "If a null Block Entity is provided, the Level may NOT be null!");
 			Objects.requireNonNull(pos, "If a null Block Entity is provided, the pos may NOT be null!");
@@ -131,12 +126,12 @@ public class TransferUtil {
 				boolean client = level != null && level.isClientSide();
 				if (client) {
 					if (t.canTransferItemsClientSide())
-						return t.getItemStorage(side); // only query if on client and client transfer allowed
+						return Optional.ofNullable(t.getItemStorage(side)); // only query if on client and client transfer allowed
 				} else {
-					return t.getItemStorage(side); // null level - hope for the best
+					return Optional.ofNullable(t.getItemStorage(side)); // null level - hope for the best
 				}
 			}
-			return null;
+			return Optional.empty();
 		}
 		List<Storage<ItemVariant>> itemStorages = new ArrayList<>();
 		BlockState state = be == null ? level.getBlockState(pos) : be.getBlockState();
@@ -158,9 +153,9 @@ public class TransferUtil {
 			}
 		}
 
-		if (itemStorages.isEmpty()) return null;
-		if (itemStorages.size() == 1) return itemStorages.get(0);
-		return new CombinedStorage<>(itemStorages);
+		if (itemStorages.isEmpty()) return Optional.empty();
+		if (itemStorages.size() == 1) return Optional.of(itemStorages.get(0));
+		return Optional.of(new CombinedStorage<>(itemStorages));
 	}
 
 	// Fluid storage getting
@@ -169,8 +164,7 @@ public class TransferUtil {
 	 * The recommended way to get a fluid storage.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<FluidVariant> getFluidStorage(Level level, BlockPos pos, @Nullable Direction side) {
+	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, @Nullable Direction side) {
 		return getFluidStorage(level, pos, null, side);
 	}
 
@@ -178,8 +172,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<FluidVariant> getFluidStorage(Level level, BlockPos pos) {
+	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos) {
 		return getFluidStorage(level, pos, null);
 	}
 
@@ -188,8 +181,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<FluidVariant> getFluidStorage(BlockEntity be, @Nullable Direction side) {
+	public static Optional<Storage<FluidVariant>> getFluidStorage(BlockEntity be, @Nullable Direction side) {
 		return getFluidStorage(null, null, be, side);
 	}
 
@@ -197,8 +189,7 @@ public class TransferUtil {
 	 * Prefer {@link TransferUtil#getFluidStorage(Level, BlockPos, Direction)} variant when possible.
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, BlockEntity, Direction)
 	 */
-	@Nullable
-	public static Storage<FluidVariant> getFluidStorage(BlockEntity be) {
+	public static Optional<Storage<FluidVariant>> getFluidStorage(BlockEntity be) {
 		return getFluidStorage(be, null);
 	}
 
@@ -212,8 +203,7 @@ public class TransferUtil {
 	 * @see TransferUtil#getFluidStorage(Level, BlockPos, Direction)
 	 * @return a Storage of FluidVariants, or null if none found.
 	 */
-	@Nullable
-	public static Storage<FluidVariant> getFluidStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
+	public static Optional<Storage<FluidVariant>> getFluidStorage(Level level, BlockPos pos, BlockEntity be, @Nullable Direction side) {
 		if (be == null) {
 			Objects.requireNonNull(level, "If a null Block Entity is provided, the Level may NOT be null!");
 			Objects.requireNonNull(pos, "If a null Block Entity is provided, the pos may NOT be null!");
@@ -230,12 +220,12 @@ public class TransferUtil {
 				boolean client = level != null && level.isClientSide();
 					if (client) {
 						if (t.canTransferFluidsClientSide())
-							return t.getFluidStorage(side); // only query if on client and client transfer allowed
+							return Optional.ofNullable(t.getFluidStorage(side)); // only query if on client and client transfer allowed
 					} else {
-						return t.getFluidStorage(side); // null level - hope for the best
+						return Optional.ofNullable(t.getFluidStorage(side)); // null level - hope for the best
 					}
 			}
-			return null;
+			return Optional.empty();
 		}
 		List<Storage<FluidVariant>> fluidStorages = new ArrayList<>();
 		BlockState state = be == null ? level.getBlockState(pos) : be.getBlockState();
@@ -257,9 +247,9 @@ public class TransferUtil {
 			}
 		}
 
-		if (fluidStorages.isEmpty()) return null;
-		if (fluidStorages.size() == 1) return fluidStorages.get(0);
-		return new CombinedStorage<>(fluidStorages);
+		if (fluidStorages.isEmpty()) return Optional.empty();
+		if (fluidStorages.size() == 1) return Optional.of(fluidStorages.get(0));
+		return Optional.of(new CombinedStorage<>(fluidStorages));
 	}
 
 	// misc utils below
@@ -272,13 +262,12 @@ public class TransferUtil {
 	 * @param <T> either ItemVariant or FluidVariant, corresponding to the provided Class.
 	 * @return the found storage, or null if none available.
 	 */
-	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T> Storage<T> getStorage(BlockEntity be, @Nullable Direction side, Class<T> capability) {
+	public static <T> Optional<?> getStorage(BlockEntity be, @Nullable Direction side, Class<T> capability) {
 		if (capability == ItemVariant.class) {
-			return (Storage<T>) getItemStorage(null, null, be, side);
+			return getItemStorage(null, null, be, side);
 		} else if (capability == FluidVariant.class) {
-			return (Storage<T>) getFluidStorage(null, null, be, side);
+			return getFluidStorage(null, null, be, side);
 		} else {
 			throw new RuntimeException("Class must either be ItemVariant or FluidVariant!");
 		}

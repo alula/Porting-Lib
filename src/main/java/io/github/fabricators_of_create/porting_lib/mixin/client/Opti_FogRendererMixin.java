@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.FogRenderer;
 
 @Environment(EnvType.CLIENT)
 @Mixin(FogRenderer.class)
-public abstract class FogRendererMixin {
+public abstract class Opti_FogRendererMixin {
 	@Shadow
 	private static float fogRed;
 

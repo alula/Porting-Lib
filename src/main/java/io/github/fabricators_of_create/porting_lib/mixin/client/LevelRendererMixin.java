@@ -61,24 +61,6 @@ public abstract class LevelRendererMixin {
 	@Final
 	private Minecraft minecraft;
 
-	@ModifyVariable(
-		method = "renderLevel(Lcom/mojang/blaze3d/vertex/PoseStack;FJZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lcom/mojang/math/Matrix4f;)V",
-		slice = @Slice(
-				from = @At(
-						value = "INVOKE",
-						target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$CompiledChunk;getRenderableBlockEntities()Ljava/util/List;"
-				),
-				to = @At(
-						value = "INVOKE",
-						target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V"
-				)
-		),
-		at = @At("STORE")
-	)
-	private Iterator<BlockEntity> port_lib$wrapBlockEntityIterator(Iterator<BlockEntity> iterator) {
-		return new CullingBlockEntityIterator(iterator, capturedFrustum != null ? capturedFrustum : cullingFrustum);
-	}
-
 	@WrapWithCondition(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;renderHitOutline(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/entity/Entity;DDDLnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
 	private boolean port_lib$renderBlockOutline(LevelRenderer self, PoseStack poseStack, VertexConsumer vertexConsumer, Entity entity,
 										double d, double e, double f, BlockPos blockPos, BlockState blockState,
@@ -116,16 +98,5 @@ public abstract class LevelRendererMixin {
 	@Inject(method = "renderSky", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER))
 	private void port_lib$fogRender(PoseStack poseStack, Matrix4f projectionMatrix, float partialTick, Camera camera, boolean bl, Runnable skyFogSetup, CallbackInfo ci) {
 		FogEvents.RENDER_FOG.invoker().onFogRender(FogRenderer.FogMode.FOG_SKY, camera, partialTick, Minecraft.getInstance().gameRenderer.getRenderDistance());
-	}
-
-	@Inject(
-			method = "renderLevel",
-			at = @At(value = "INVOKE",
-					target = "Lnet/minecraft/client/renderer/FogRenderer;setupFog(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/FogRenderer$FogMode;FZ)V",
-					shift = At.Shift.AFTER
-			)
-	)
-	private void port_lib$fogRenderAfter(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
-		FogEvents.RENDER_FOG.invoker().onFogRender(FogRenderer.FogMode.FOG_TERRAIN, camera, partialTick, Math.max(gameRenderer.getRenderDistance(), 32.0F));
 	}
 }

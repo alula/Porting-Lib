@@ -1,4 +1,4 @@
-package io.github.fabricators_of_create.porting_lib.mixin.client;
+package io.github.fabricators_of_create.porting_lib.mixin.client.compat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -22,8 +22,8 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(ItemFrameRenderer.class)
-public abstract class ItemFrameRendererMixin<T extends ItemFrame> extends EntityRenderer<T> {
-	protected ItemFrameRendererMixin(Context context) {
+public abstract class Opti_ItemFrameRendererMixin<T extends ItemFrame> extends EntityRenderer<T> {
+	protected Opti_ItemFrameRendererMixin(Context context) {
 		super(context);
 	}
 

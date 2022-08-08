@@ -32,9 +32,9 @@ import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HumanoidArmorLayer.class)
-public abstract class HumanoidArmorLayerMixin extends RenderLayer<LivingEntity, HumanoidModel<LivingEntity>> {
+public abstract class Opti_HumanoidArmorLayerMixin extends RenderLayer<LivingEntity, HumanoidModel<LivingEntity>> {
 
-	public HumanoidArmorLayerMixin(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> renderLayerParent) {
+	public Opti_HumanoidArmorLayerMixin(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> renderLayerParent) {
 		super(renderLayerParent);
 	}
 

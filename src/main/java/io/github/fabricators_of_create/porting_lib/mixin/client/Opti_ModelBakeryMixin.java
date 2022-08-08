@@ -12,7 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 @Mixin(ModelBakery.class)
-public abstract class ModelBakeryMixin {
+public abstract class Opti_ModelBakeryMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V"))
 	public void onModelLoad(ResourceManager manager, BlockColors colors, ProfilerFiller profiler, int mipLevel, CallbackInfo ci) {
 		ModelLoadCallback.EVENT.invoker().onModelsStartLoading(manager, colors, profiler, mipLevel);
